@@ -1,10 +1,39 @@
 use std::fs;
 
 fn main() {
-    day2_1();
+    let input = fs::read_to_string("../data.txt").expect("File not found");
+    // let replacedInput: Vec<u32> =
+    let filtered_input: Vec<u32> = input
+        .split("\n")
+        .clone()
+        .map(|i| {
+            let replaced: Vec<char> = i
+                .replace("zero", "z0o")
+                .replace("one", "o1e")
+                .replace("two", "t2o")
+                .replace("three", "t3e")
+                .replace("four", "f4r")
+                .replace("five", "f5e")
+                .replace("six", "s6x")
+                .replace("seven", "s7n")
+                .replace("eight", "e8t")
+                .replace("nine", "n9e")
+                .chars()
+                .filter(|chr| chr.is_digit(10))
+                .collect();
+
+            let first = &replaced[0];
+            let last = &replaced[replaced.len() - 1];
+
+            format!("{first}{last}").parse::<u32>().unwrap()
+        })
+        .collect();
+
+    // let sol: u64 = filtered_input.iter().sum();
+    println!("{:?}", filtered_input.into_iter().sum::<u32>());
 }
 
-fn day2_1() {
+fn day1_1() {
     let contents = fs::read_to_string("../data.txt").expect("File not found");
     let sum: u32 = contents
         .split("\n")
@@ -32,27 +61,22 @@ fn day2_1() {
     println!("{:?}", sum);
 }
 
-fn map_string_to_digit(s: &String) -> Option<char> {
-    match s.as_str() {
-        "one" => Some('1'),
-        "two" => Some('2'),
-        "three" => Some('3'),
-        "four" => Some('4'),
-        "five" => Some('5'),
-        "six" => Some('6'),
-        "seven" => Some('7'),
-        "eight" => Some('8'),
-        "nine" => Some('9'),
-        _ => None,
-    }
-}
+fn day1_2() {
+    let input = fs::read_to_string("../data2.txt").expect("File not found");
 
-fn day2_2() {
-    let digits: Vec<(String, _)> = [
-        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-    ]
-    .iter()
-    .enumerate()
-    .flat_map(|(i, &d)| [(d.into(), i + 1), (format!("{}", i + 1), i + 1)])
-    .collect();
+    // let replacedInput: Vec<u32> =
+    let replaced_input = input.split("\n").into_iter().map(|i| {
+        println!("Oi");
+
+        i.replace("zero", "zeroOzero")
+            .replace("one", "one1one")
+            .replace("two", "two2two")
+            .replace("thee", "three3three")
+            .replace("four", "four4four")
+            .replace("five", "five5five")
+            .replace("six", "six6six")
+            .replace("seven", "seven7seven")
+            .replace("eight", "eight8eight")
+            .replace("nine", "nine9nine")
+    });
 }
