@@ -1,3 +1,4 @@
+use regex::Regex;
 use std::{collections::hash_map::Entry, collections::HashMap};
 
 #[derive(Debug)]
@@ -18,7 +19,8 @@ pub fn solve1(input: &String) {
     let size_n = lines.len();
     let size_m = lines[0].len();
 
-    let numbers = get_nums(&lines);
+    let numbers = get_nums_re(&lines);
+
     let symbols = get_symbols(&lines);
 
     let mut sum = 0;
@@ -40,7 +42,7 @@ pub fn solve2(input: &String) {
     let size_n = lines.len();
     let size_m = lines[0].len();
 
-    let numbers = get_nums(&lines);
+    let numbers = get_nums_re(&lines);
     let symbols = get_symbols(&lines);
 
     let mut gears: HashMap<(usize, usize), Vec<i32>> = HashMap::new();
@@ -71,32 +73,18 @@ pub fn solve2(input: &String) {
     println!("{result}");
 }
 
-fn get_nums(input: &Vec<Vec<char>>) -> Vec<Number> {
+fn get_nums_re(input: &Vec<Vec<char>>) -> Vec<Number> {
     let mut numbers: Vec<Number> = Vec::new();
 
+    let re = Regex::new(r"\d+").unwrap();
     for (row, line) in input.iter().enumerate() {
-        let mut num_buffer: String = String::new();
-        let mut checked_cols: usize = 0;
-        for (col, c) in line.iter().enumerate() {
-            let mut num_length: usize = 1;
-            if c.is_ascii_digit() && col >= checked_cols {
-                let pos: (usize, usize) = (row, col);
-                num_buffer.push(*c);
-                while col + num_length < line.len() && line[col + num_length].is_ascii_digit() {
-                    num_buffer.push(line[col + num_length].to_owned());
-                    num_length += 1;
-                }
-
-                checked_cols = col + num_length;
-
-                numbers.push(Number {
-                    value: num_buffer.parse::<i32>().unwrap(),
-                    position: pos,
-                    length: num_length,
-                });
-
-                num_buffer.clear();
-            }
+        for m in re.find_iter(&line.iter().collect::<String>()) {
+            println!("{:?}", m);
+            numbers.push(Number {
+                value: m.as_str().parse::<i32>().unwrap(),
+                position: (row, m.start()),
+                length: m.as_str().len(),
+            });
         }
     }
 
