@@ -1,4 +1,4 @@
-use std::{collections::HashMap, f32::consts::E};
+use std::{collections::hash_map::Entry, collections::HashMap};
 
 #[derive(Debug)]
 struct Number {
@@ -33,6 +33,42 @@ pub fn solve1(input: &String) {
     }
 
     println!("{sum}");
+}
+
+pub fn solve2(input: &String) {
+    let lines: Vec<Vec<char>> = input.lines().map(|l| l.chars().collect()).collect();
+    let size_n = lines.len();
+    let size_m = lines[0].len();
+
+    let numbers = get_nums(&lines);
+    let symbols = get_symbols(&lines);
+
+    let mut gears: HashMap<(usize, usize), Vec<i32>> = HashMap::new();
+    for n in numbers.iter() {
+        let neighbors = get_neighbors(size_n, size_m, n.position, n.length);
+        for neighbor in neighbors.iter() {
+            match symbols.get(neighbor) {
+                Some(s) => {
+                    if s.value == '*' {
+                        if let Entry::Vacant(e) = gears.entry(s.position) {
+                            gears.insert(s.position, vec![n.value]);
+                        } else {
+                            gears.get_mut(&s.position).unwrap().push(n.value);
+                        }
+                    }
+                }
+                None => (),
+            }
+        }
+    }
+
+    let result: i32 = gears
+        .iter()
+        .filter(|g| g.1.len() > 1)
+        .map(|g| g.1.iter().product::<i32>())
+        .sum();
+
+    println!("{result}");
 }
 
 fn get_nums(input: &Vec<Vec<char>>) -> Vec<Number> {
