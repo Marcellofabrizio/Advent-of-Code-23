@@ -118,12 +118,10 @@ pub fn solve2(input: &String) {
 
         let mut new_seeds: Vec<std::ops::Range<i64>> = Vec::new();
 
-        println!("{:?}", ranges);
-
         for s in seeds.iter() {
+            let mut found = false;
             for (a, b) in ranges.iter() {
                 if s.end <= b.start || b.end <= s.start {
-                    new_seeds.push(s.clone());
                     continue;
                 }
 
@@ -132,14 +130,14 @@ pub fn solve2(input: &String) {
                     end: min(s.end, b.end),
                 };
 
-                if s.start > inner_range.start {
+                if s.start >= inner_range.start {
                     new_seeds.push(std::ops::Range {
                         start: s.start,
                         end: inner_range.start,
                     });
                 }
 
-                if inner_range.end > s.end {
+                if inner_range.end >= s.end {
                     new_seeds.push(std::ops::Range {
                         start: inner_range.end,
                         end: s.end,
@@ -150,9 +148,17 @@ pub fn solve2(input: &String) {
                     start: inner_range.start + (a.start - b.start),
                     end: inner_range.end + (a.start - b.start),
                 });
+
+                found = true;
+
                 break;
             }
+
+            if !found {
+                new_seeds.push(s.clone());
+            }
         }
+        println!("{:?}", new_seeds);
         seeds = new_seeds;
     }
 
