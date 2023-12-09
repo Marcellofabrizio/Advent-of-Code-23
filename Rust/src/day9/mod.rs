@@ -41,15 +41,17 @@ pub fn solve2(input: &String) {
         .map(|c| extrapolate2(c.to_vec()))
         .collect::<Vec<(i64, i64)>>();
 
-    let mut result = 0;
+    let mut result: (i64, i64) = (0, 0);
     for n in last_nums {
-        result += n.0;
+        result.0 += n.0;
+        result.1 += n.1;
     }
 
-    println!("{:?}", result);
+    println!("First Extrapolations: {:?}", result.0);
+    println!("Last Extrapolations: {:?}", result.1);
 }
 
-pub fn extrapolate2(vals: Vec<(i64)>) -> (i64, i64) {
+pub fn extrapolate2(vals: Vec<i64>) -> (i64, i64) {
     if vals.iter().all(|v| v == &0) {
         return (0, 0);
     } else {
